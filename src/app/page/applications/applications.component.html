@@ -1,0 +1,218 @@
+<header>
+  <div class="header-kicker">Job Application Tracker · Gmail Data</div>
+  <h1>Job Application<em> Tracker</em></h1>
+
+  <div class="header-meta">
+    <div class="stat-chip">
+      <span class="stat-num">{{ facade.stats().total }}</span>
+      <span class="stat-label">Total Applications</span>
+    </div>
+    <div class="divider"></div>
+    <div class="stat-chip green">
+      <span class="stat-num">{{ facade.stats().interview }}</span>
+      <span class="stat-label">Interview Invitations</span>
+    </div>
+    <div class="divider"></div>
+    <div class="stat-chip purple">
+      <span class="stat-num">{{ facade.stats().viewed }}</span>
+      <span class="stat-label">Viewed</span>
+    </div>
+    <div class="divider"></div>
+    <div class="stat-chip pink">
+      <span class="stat-num">{{ facade.stats().rejected }}</span>
+      <span class="stat-label">Rejected</span>
+    </div>
+    <div class="divider"></div>
+    <div class="stat-chip blue">
+      <span class="stat-num">{{ facade.stats().active }}</span>
+      <span class="stat-label">Pending</span>
+    </div>
+  </div>
+</header>
+
+<!-- Search Panel -->
+<div class="search-bar">
+  <button class="search-toggle" (click)="showSearch.set(!showSearch())">
+    {{ showSearch() ? '▲ Collapse Search' : '▼ Advanced Search' }}
+  </button>
+</div>
+
+@if (showSearch()) {
+  <div class="search-panel">
+    <div class="search-fields">
+      <div class="search-field">
+        <label>Applied After</label>
+        <input type="date" [(ngModel)]="searchForm.appliedAfter" />
+      </div>
+      <div class="search-field">
+        <label>Company Name</label>
+        <input type="text" [(ngModel)]="searchForm.companyName" placeholder="Search..." />
+      </div>
+      <div class="search-field">
+        <label>Offer Status</label>
+        <select [(ngModel)]="searchForm.offerStatus">
+          <option value="">All</option>
+          @for (opt of offerStatusOptions; track opt.value) {
+            <option [value]="opt.value">{{ opt.label }}</option>
+          }
+        </select>
+      </div>
+      <div class="search-field">
+        <label>Resume Version</label>
+        <input type="text" [(ngModel)]="searchForm.resumeVersion" placeholder="Search..." />
+      </div>
+      <div class="search-field">
+        <label>Platform</label>
+        <input type="text" [(ngModel)]="searchForm.platform" placeholder="Search..." />
+      </div>
+    </div>
+    <div class="search-actions">
+      <button class="btn-search" (click)="onSearch()">Search</button>
+      <button class="btn-reset" (click)="onReset()">Reset</button>
+    </div>
+  </div>
+}
+
+<!-- Status Filter Buttons -->
+<div class="controls">
+  <button class="filter-btn" [class.active]="activeFilter() === 'ALL'" (click)="activeFilter.set('ALL')">All</button>
+  <button class="filter-btn" [class.active]="activeFilter() === 'INTERVIEW_INVITATION'" (click)="activeFilter.set('INTERVIEW_INVITATION')">Interview Invitations</button>
+  <button class="filter-btn" [class.active]="activeFilter() === 'VIEWED'" (click)="activeFilter.set('VIEWED')">Viewed</button>
+  <button class="filter-btn" [class.active]="activeFilter() === 'ACTIVE'" (click)="activeFilter.set('ACTIVE')">Pending</button>
+  <button class="filter-btn" [class.active]="activeFilter() === 'REJECTED'" (click)="activeFilter.set('REJECTED')">Rejected</button>
+  <button class="filter-btn" [class.active]="activeFilter() === 'SENT'" (click)="activeFilter.set('SENT')">Applied</button>
+</div>
+
+<main>
+  @if (facade.loading()) {
+    <div class="state-msg">Loading...</div>
+  } @else if (facade.error()) {
+    <div class="state-msg error">{{ facade.error() }}</div>
+  } @else {
+    <div class="section-title">— {{ visibleApps().length }} records —</div>
+
+    <table>
+      <thead>
+        <tr>
+          <th style="width:200px">Company</th>
+          <th style="width:220px">Position</th>
+          <th>Platform</th>
+          <th style="width:110px">Date</th>
+          <th style="width:150px">Status</th>
+          <th>Notes</th>
+          <th style="width:60px"></th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (app of visibleApps(); track app.id) {
+          <tr [class.highlight-row]="app.offerStatus === 'INTERVIEW_INVITATION'">
+            <td>
+              <div class="company-name">{{ app.companyName }}</div>
+              @if (app.resumeVersion) {
+                <div class="meta-text">CV: {{ app.resumeVersion }}</div>
+              }
+            </td>
+            <td>
+              <div class="role-text">{{ app.jobTitle || '—' }}</div>
+            </td>
+            <td>
+              <div class="meta-text">{{ app.platform || '—' }}</div>
+            </td>
+            <td>
+              <div class="date-text">{{ formatDate(app.appliedDate) }}</div>
+            </td>
+            <td>
+              <span [class]="'badge ' + statusClass(app.offerStatus)">
+                {{ statusLabel(app.offerStatus) }}
+              </span>
+              @if (app.mark) {
+                <div class="mark-stars">{{ markStars(app.mark) }}</div>
+              }
+            </td>
+            <td>
+              <div class="note-text">{{ app.snippet || '' }}</div>
+            </td>
+            <td>
+              <button class="edit-btn" (click)="openEdit(app)">Edit</button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+
+    <div class="footer-note">
+      * Showing {{ visibleApps().length }} / {{ facade.applications().length }} records
+    </div>
+  }
+</main>
+
+<!-- Edit Modal -->
+@if (editingApp()) {
+  <div class="modal-overlay" (click)="closeEdit()">
+    <div class="modal" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2>Edit Application — {{ editingApp()!.companyName }}</h2>
+        <button class="modal-close" (click)="closeEdit()">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-grid">
+          <div class="form-field">
+            <label>Company Name</label>
+            <input type="text" [(ngModel)]="editForm.companyName" />
+          </div>
+          <div class="form-field">
+            <label>Position</label>
+            <input type="text" [(ngModel)]="editForm.jobTitle" />
+          </div>
+          <div class="form-field">
+            <label>Platform</label>
+            <input type="text" [(ngModel)]="editForm.platform" />
+          </div>
+          <div class="form-field">
+            <label>Applied Date</label>
+            <input type="date" [(ngModel)]="editForm.appliedDate" />
+          </div>
+          <div class="form-field">
+            <label>Status</label>
+            <select [(ngModel)]="editForm.offerStatus">
+              @for (opt of offerStatusOptions; track opt.value) {
+                <option [value]="opt.value">{{ opt.label }}</option>
+              }
+            </select>
+          </div>
+          <div class="form-field">
+            <label>Resume Version</label>
+            <input type="text" [(ngModel)]="editForm.resumeVersion" />
+          </div>
+          <div class="form-field">
+            <label>Rating (1–5)</label>
+            <input type="number" [(ngModel)]="editForm.mark" min="1" max="5" />
+          </div>
+          <div class="form-field">
+            <label>Email Subject</label>
+            <input type="text" [(ngModel)]="editForm.emailSubject" />
+          </div>
+          <div class="form-field">
+            <label>Email From</label>
+            <input type="text" [(ngModel)]="editForm.emailFrom" />
+          </div>
+          <div class="form-field full-width">
+            <label>JD Description</label>
+            <textarea [(ngModel)]="editForm.jd" rows="3"></textarea>
+          </div>
+          <div class="form-field full-width">
+            <label>Notes</label>
+            <textarea [(ngModel)]="editForm.snippet" rows="3"></textarea>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-delete" (click)="onDelete()">Delete</button>
+        <div class="modal-footer-actions">
+          <button class="btn-cancel" (click)="closeEdit()">Cancel</button>
+          <button class="btn-save" (click)="submitEdit()">Save</button>
+        </div>
+      </div>
+    </div>
+  </div>
+}

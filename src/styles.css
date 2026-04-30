@@ -1,1 +1,37 @@
-/* You can add global styles to this file, and also import other style files */
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400;500&family=Instrument+Sans:ital,wght@0,400;0,600;1,400&display=swap');
+
+:root {
+  --bg: #f7f8fc;
+  --surface: #ffffff;
+  --surface2: #f0f2f7;
+  --border: rgba(0,0,0,0.08);
+  --accent: #1a9e78;
+  --accent2: #c07a00;
+  --accent3: #d04470;
+  --text: #1c1f2e;
+  --muted: #8892a0;
+  --tag-sent: #e4f7f0;
+  --tag-sent-txt: #0d7a55;
+  --tag-viewed: #fef3d8;
+  --tag-viewed-txt: #8a5e00;
+  --tag-rejected: #fde8ef;
+  --tag-rejected-txt: #b03060;
+  --tag-active: #e4eefb;
+  --tag-active-txt: #1a52b8;
+  --tag-interview: #ede8fb;
+  --tag-interview-txt: #5b38b8;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Instrument Sans', sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
