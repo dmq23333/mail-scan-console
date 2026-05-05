@@ -76,11 +76,11 @@
 <!-- Status Filter Buttons -->
 <div class="controls">
   <button class="filter-btn" [class.active]="activeFilter() === 'ALL'" (click)="activeFilter.set('ALL')">All</button>
-  <button class="filter-btn" [class.active]="activeFilter() === 'INTERVIEW_INVITATION'" (click)="activeFilter.set('INTERVIEW_INVITATION')">Interview Invitations</button>
-  <button class="filter-btn" [class.active]="activeFilter() === 'VIEWED'" (click)="activeFilter.set('VIEWED')">Viewed</button>
-  <button class="filter-btn" [class.active]="activeFilter() === 'ACTIVE'" (click)="activeFilter.set('ACTIVE')">Pending</button>
+  <button class="filter-btn" [class.active]="activeFilter() === 'APPLIED'" (click)="activeFilter.set('APPLIED')">Applied</button>
+  <button class="filter-btn" [class.active]="activeFilter() === 'APPLICATION_VIEWED'" (click)="activeFilter.set('APPLICATION_VIEWED')">Viewed</button>
+  <button class="filter-btn" [class.active]="activeFilter() === 'WAITING_RESPONSE'" (click)="activeFilter.set('WAITING_RESPONSE')">Waiting</button>
+  <button class="filter-btn" [class.active]="activeFilter() === 'INTERVIEW_INVITATION'" (click)="activeFilter.set('INTERVIEW_INVITATION')">Interview</button>
   <button class="filter-btn" [class.active]="activeFilter() === 'REJECTED'" (click)="activeFilter.set('REJECTED')">Rejected</button>
-  <button class="filter-btn" [class.active]="activeFilter() === 'SENT'" (click)="activeFilter.set('SENT')">Applied</button>
 </div>
 
 <main>
@@ -100,17 +100,15 @@
           <th style="width:110px">Date</th>
           <th style="width:150px">Status</th>
           <th>Notes</th>
+          <th style="width:100px">Resume</th>
           <th style="width:60px"></th>
         </tr>
       </thead>
       <tbody>
         @for (app of visibleApps(); track app.id) {
-          <tr [class.highlight-row]="app.offerStatus === 'INTERVIEW_INVITATION'">
+          <tr [class.highlight-row]="app.offerStatus === 'INTERVIEW_INVITATION'" [class.waiting-row]="app.offerStatus === 'WAITING_RESPONSE'">
             <td>
               <div class="company-name">{{ app.companyName }}</div>
-              @if (app.resumeVersion) {
-                <div class="meta-text">CV: {{ app.resumeVersion }}</div>
-              }
             </td>
             <td>
               <div class="role-text">{{ app.jobTitle || '—' }}</div>
@@ -131,6 +129,9 @@
             </td>
             <td>
               <div class="note-text">{{ app.snippet || '' }}</div>
+            </td>
+            <td>
+              <div class="meta-text">{{ app.resumeVersion || '—' }}</div>
             </td>
             <td>
               <button class="edit-btn" (click)="openEdit(app)">Edit</button>

@@ -1,4 +1,4 @@
-export type OfferStatus = 'SENT' | 'VIEWED' | 'REJECTED' | 'ACTIVE' | 'INTERVIEW_INVITATION';
+export type OfferStatus = 'APPLIED' | 'APPLICATION_VIEWED' | 'WAITING_RESPONSE' | 'INTERVIEW_INVITATION' | 'REJECTED';
 
 export interface JobApplication {
   id: number;

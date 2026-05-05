@@ -27,11 +27,11 @@ export class ApplicationsComponent implements OnInit {
   protected editForm: ApplicationUpdateRequest = {};
 
   protected readonly offerStatusOptions: { value: OfferStatus; label: string }[] = [
-    { value: 'SENT', label: 'Applied' },
-    { value: 'VIEWED', label: 'Viewed' },
-    { value: 'REJECTED', label: 'Rejected' },
-    { value: 'ACTIVE', label: 'Pending' },
+    { value: 'APPLIED', label: 'Applied' },
+    { value: 'APPLICATION_VIEWED', label: 'Viewed' },
+    { value: 'WAITING_RESPONSE', label: 'Waiting' },
     { value: 'INTERVIEW_INVITATION', label: 'Interview' },
+    { value: 'REJECTED', label: 'Rejected' },
   ];
 
   protected readonly visibleApps = computed(() => {
@@ -113,22 +113,22 @@ export class ApplicationsComponent implements OnInit {
 
   protected statusLabel(status: OfferStatus): string {
     const map: Record<OfferStatus, string> = {
-      SENT: 'Applied',
-      VIEWED: 'Viewed',
-      REJECTED: 'Rejected',
-      ACTIVE: 'Pending',
+      APPLIED: 'Applied',
+      APPLICATION_VIEWED: 'Viewed',
+      WAITING_RESPONSE: 'Waiting',
       INTERVIEW_INVITATION: 'Interview',
+      REJECTED: 'Rejected',
     };
     return map[status];
   }
 
   protected statusClass(status: OfferStatus): string {
     const map: Record<OfferStatus, string> = {
-      SENT: 'sent',
-      VIEWED: 'viewed',
-      REJECTED: 'rejected',
-      ACTIVE: 'active',
+      APPLIED: 'applied',
+      APPLICATION_VIEWED: 'viewed',
+      WAITING_RESPONSE: 'waiting',
       INTERVIEW_INVITATION: 'interview',
+      REJECTED: 'rejected',
     };
     return map[status];
   }

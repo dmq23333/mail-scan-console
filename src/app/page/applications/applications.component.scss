@@ -329,20 +329,20 @@ tbody td:first-child { padding-left: 0; }
   flex-shrink: 0;
 }
 
-.badge.sent { background: var(--tag-sent); color: var(--tag-sent-txt); }
-.badge.sent::before { background: var(--tag-sent-txt); }
+.badge.applied { background: var(--tag-sent); color: var(--tag-sent-txt); }
+.badge.applied::before { background: var(--tag-sent-txt); }
 
 .badge.viewed { background: var(--tag-viewed); color: var(--tag-viewed-txt); }
 .badge.viewed::before { background: var(--tag-viewed-txt); }
 
-.badge.rejected { background: var(--tag-rejected); color: var(--tag-rejected-txt); }
-.badge.rejected::before { background: var(--tag-rejected-txt); }
-
-.badge.active { background: var(--tag-active); color: var(--tag-active-txt); }
-.badge.active::before { background: var(--tag-active-txt); }
+.badge.waiting { background: var(--tag-active); color: var(--tag-active-txt); }
+.badge.waiting::before { background: var(--tag-active-txt); }
 
 .badge.interview { background: var(--tag-interview); color: var(--tag-interview-txt); }
 .badge.interview::before { background: var(--tag-interview-txt); }
+
+.badge.rejected { background: var(--tag-rejected); color: var(--tag-rejected-txt); }
+.badge.rejected::before { background: var(--tag-rejected-txt); }
 
 .mark-stars {
   margin-top: 4px;

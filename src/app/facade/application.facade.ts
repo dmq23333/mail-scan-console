@@ -16,9 +16,9 @@ export class ApplicationFacade {
     return {
       total: apps.length,
       interview: apps.filter(a => a.offerStatus === 'INTERVIEW_INVITATION').length,
-      viewed: apps.filter(a => a.offerStatus === 'VIEWED').length,
+      viewed: apps.filter(a => a.offerStatus === 'APPLICATION_VIEWED').length,
       rejected: apps.filter(a => a.offerStatus === 'REJECTED').length,
-      active: apps.filter(a => a.offerStatus === 'ACTIVE').length,
+      active: apps.filter(a => a.offerStatus === 'WAITING_RESPONSE').length,
     };
   });
 
