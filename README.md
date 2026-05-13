@@ -12,6 +12,20 @@ ng serve
 
 Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
 
+## Mock API (MSW)
+
+This project uses MSW in development mode. When running `ng serve` (or `npm start`), API calls to `/api/applications` are mocked in the browser, so the page can render even when the backend is unavailable.
+
+Mock files:
+
+- `src/app/mocks/data/applications.ts`
+- `src/app/mocks/handlers.ts`
+- `src/app/mocks/browser.ts`
+
+The service worker script is generated at:
+
+- `public/mockServiceWorker.js`
+
 ## Code scaffolding
 
 Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
