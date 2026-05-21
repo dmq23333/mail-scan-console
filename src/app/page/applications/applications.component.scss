@@ -250,6 +250,30 @@ table {
   border-collapse: collapse;
 }
 
+.table-wrap {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.bottom-scroller {
+  position: sticky;
+  bottom: 0;
+  z-index: 30;
+  margin-top: 8px;
+  height: 16px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  background: var(--surface2);
+  -webkit-overflow-scrolling: touch;
+}
+
+.bottom-scroller-track {
+  height: 1px;
+}
+
 thead th {
   font-family: 'DM Mono', monospace;
   font-size: 10px;
@@ -605,14 +629,210 @@ tr.highlight-row .company-name { color: var(--accent); }
 }
 
 /* ── Responsive ── */
+@media (max-width: 1200px) {
+  header,
+  .search-bar,
+  .search-panel,
+  .controls,
+  main {
+    padding-left: 32px;
+    padding-right: 32px;
+  }
+
+  .header-meta {
+    gap: 18px;
+  }
+}
+
+@media (max-width: 992px) {
+  header,
+  .search-bar,
+  .search-panel,
+  .controls,
+  main {
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+
+  table {
+    min-width: 920px;
+  }
+
+  .search-fields {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .note-text {
+    max-width: 220px;
+  }
+}
+
 @media (max-width: 768px) {
-  header, .search-bar, .search-panel, .controls, main {
+  header,
+  .search-bar,
+  .search-panel,
+  .controls,
+  main {
     padding-left: 20px;
     padding-right: 20px;
   }
-  thead { display: none; }
-  tbody td { display: block; padding: 4px 0; border: none; }
-  tbody tr { display: block; padding: 16px 0; border-bottom: 1px solid var(--border); }
-  .form-grid { grid-template-columns: 1fr; }
-  .form-field.full-width { grid-column: unset; }
+
+  header {
+    padding-top: 32px;
+    padding-bottom: 24px;
+  }
+
+  .header-meta {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px 12px;
+    align-items: end;
+  }
+
+  .divider {
+    display: none;
+  }
+
+  .stat-num {
+    font-size: 1.5rem;
+  }
+
+  .search-fields {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .search-actions {
+    flex-wrap: wrap;
+  }
+
+  .search-actions button {
+    flex: 1;
+    min-width: 120px;
+  }
+
+  .controls {
+    top: 0;
+    gap: 6px;
+  }
+
+  .filter-btn {
+    padding: 6px 10px;
+  }
+
+  .table-wrap {
+    overflow: visible;
+  }
+
+  .bottom-scroller {
+    display: none;
+  }
+
+  table {
+    min-width: 0;
+  }
+
+  thead {
+    display: none;
+  }
+
+  tbody,
+  tbody tr,
+  tbody td {
+    display: block;
+    width: 100%;
+  }
+
+  tbody tr {
+    padding: 12px;
+    margin-bottom: 10px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--surface);
+  }
+
+  tbody td {
+    padding: 7px 0;
+    border: none;
+  }
+
+  tbody td:first-child {
+    padding-left: 0;
+  }
+
+  tbody td::before {
+    display: block;
+    margin-bottom: 2px;
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+
+  tbody td:nth-child(1)::before { content: 'Company'; }
+  tbody td:nth-child(2)::before { content: 'Position'; }
+  tbody td:nth-child(3)::before { content: 'Platform'; }
+  tbody td:nth-child(4)::before { content: 'Date'; }
+  tbody td:nth-child(5)::before { content: 'Status'; }
+  tbody td:nth-child(6)::before { content: 'Notes'; }
+  tbody td:nth-child(7)::before { content: 'Resume'; }
+  tbody td:nth-child(8)::before { content: 'Actions'; }
+
+  .note-text {
+    max-width: none;
+  }
+
+  .modal-overlay {
+    padding: 12px;
+  }
+
+  .modal {
+    max-height: 95vh;
+  }
+
+  .modal-header,
+  .modal-body,
+  .modal-footer {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .form-field.full-width {
+    grid-column: unset;
+  }
+
+  .modal-footer {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
+
+  .modal-footer-actions {
+    width: 100%;
+  }
+
+  .btn-cancel,
+  .btn-save,
+  .btn-delete {
+    flex: 1;
+  }
+}
+
+@media (max-width: 520px) {
+  h1 {
+    font-size: 1.75rem;
+  }
+
+  .header-meta {
+    grid-template-columns: 1fr;
+  }
+
+  .controls {
+    position: static;
+  }
 }

@@ -91,55 +91,63 @@
   } @else {
     <div class="section-title">— {{ visibleApps().length }} records —</div>
 
-    <table>
-      <thead>
-        <tr>
-          <th style="width:200px">Company</th>
-          <th style="width:220px">Position</th>
-          <th>Platform</th>
-          <th style="width:110px">Date</th>
-          <th style="width:150px">Status</th>
-          <th>Notes</th>
-          <th style="width:100px">Resume</th>
-          <th style="width:60px"></th>
-        </tr>
-      </thead>
-      <tbody>
-        @for (app of visibleApps(); track app.id) {
-          <tr [class.highlight-row]="app.offerStatus === 'INTERVIEW_INVITATION'" [class.waiting-row]="app.offerStatus === 'WAITING_RESPONSE'">
-            <td>
-              <div class="company-name">{{ app.companyName }}</div>
-            </td>
-            <td>
-              <div class="role-text">{{ app.jobTitle || '—' }}</div>
-            </td>
-            <td>
-              <div class="meta-text">{{ app.platform || '—' }}</div>
-            </td>
-            <td>
-              <div class="date-text">{{ formatDate(app.appliedDate) }}</div>
-            </td>
-            <td>
-              <span [class]="'badge ' + statusClass(app.offerStatus)">
-                {{ statusLabel(app.offerStatus) }}
-              </span>
-              @if (app.mark) {
-                <div class="mark-stars">{{ markStars(app.mark) }}</div>
-              }
-            </td>
-            <td>
-              <div class="note-text">{{ app.snippet || '' }}</div>
-            </td>
-            <td>
-              <div class="meta-text">{{ app.resumeVersion || '—' }}</div>
-            </td>
-            <td>
-              <button class="edit-btn" (click)="openEdit(app)">Edit</button>
-            </td>
+    <div class="table-wrap" #tableWrap (scroll)="onTableWrapScroll()">
+      <table>
+        <thead>
+          <tr>
+            <th style="width:200px">Company</th>
+            <th style="width:220px">Position</th>
+            <th>Platform</th>
+            <th style="width:110px">Date</th>
+            <th style="width:150px">Status</th>
+            <th>Notes</th>
+            <th style="width:100px">Resume</th>
+            <th style="width:60px"></th>
           </tr>
-        }
-      </tbody>
-    </table>
+        </thead>
+        <tbody>
+          @for (app of visibleApps(); track app.id) {
+            <tr [class.highlight-row]="app.offerStatus === 'INTERVIEW_INVITATION'" [class.waiting-row]="app.offerStatus === 'WAITING_RESPONSE'">
+              <td>
+                <div class="company-name">{{ app.companyName }}</div>
+              </td>
+              <td>
+                <div class="role-text">{{ app.jobTitle || '—' }}</div>
+              </td>
+              <td>
+                <div class="meta-text">{{ app.platform || '—' }}</div>
+              </td>
+              <td>
+                <div class="date-text">{{ formatDate(app.appliedDate) }}</div>
+              </td>
+              <td>
+                <span [class]="'badge ' + statusClass(app.offerStatus)">
+                  {{ statusLabel(app.offerStatus) }}
+                </span>
+                @if (app.mark) {
+                  <div class="mark-stars">{{ markStars(app.mark) }}</div>
+                }
+              </td>
+              <td>
+                <div class="note-text">{{ app.snippet || '' }}</div>
+              </td>
+              <td>
+                <div class="meta-text">{{ app.resumeVersion || '—' }}</div>
+              </td>
+              <td>
+                <button class="edit-btn" (click)="openEdit(app)">Edit</button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    @if (showBottomScroller()) {
+      <div class="bottom-scroller" #bottomScroller (scroll)="onBottomScrollerScroll()">
+        <div class="bottom-scroller-track" [style.width.px]="tableScrollWidth()"></div>
+      </div>
+    }
 
     <div class="footer-note">
       * Showing {{ visibleApps().length }} / {{ facade.applications().length }} records
