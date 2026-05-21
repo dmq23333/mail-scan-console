@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, HostListener, inject, OnDestroy, OnInit, signal, computed, ViewChild } from '@angular/core';
+import { Component, inject, OnInit, signal, computed } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ApplicationFacade } from '../../facade/application.facade';
 import { JobApplication, ApplicationSearchParams, ApplicationUpdateRequest, OfferStatus } from '../../models/application.model';
@@ -10,15 +10,8 @@ import { JobApplication, ApplicationSearchParams, ApplicationUpdateRequest, Offe
   templateUrl: './applications.component.html',
   styleUrls: ['./applications.component.scss'],
 })
-export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
+export class ApplicationsComponent implements OnInit {
   protected readonly facade = inject(ApplicationFacade);
-  @ViewChild('tableWrap') private tableWrapRef?: ElementRef<HTMLDivElement>;
-  @ViewChild('bottomScroller') private bottomScrollerRef?: ElementRef<HTMLDivElement>;
-
-  private resizeObserver?: ResizeObserver;
-  private syncingFromTable = false;
-  private syncingFromBottom = false;
-  private readonly bottomScrollerBreakpoint = 992;
 
   protected searchForm = {
     appliedAfter: '',
@@ -32,8 +25,7 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
   protected activeFilter = signal<OfferStatus | 'ALL'>('ALL');
   protected editingApp = signal<JobApplication | null>(null);
   protected editForm: ApplicationUpdateRequest = {};
-  protected readonly showBottomScroller = signal(false);
-  protected readonly tableScrollWidth = signal(0);
+  protected hoverMark = signal<{ appId: number; idx: number } | null>(null);
 
   protected readonly offerStatusOptions: { value: OfferStatus; label: string }[] = [
     { value: 'APPLIED', label: 'Applied' },
@@ -51,87 +43,6 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnInit(): void {
     this.facade.search({});
-  }
-
-  ngAfterViewInit(): void {
-    this.updateBottomScroller();
-
-    const tableWrap = this.tableWrapRef?.nativeElement;
-    if (!tableWrap || typeof ResizeObserver === 'undefined') {
-      return;
-    }
-
-    this.resizeObserver = new ResizeObserver(() => this.updateBottomScroller());
-    this.resizeObserver.observe(tableWrap);
-
-    const table = tableWrap.querySelector('table');
-    if (table) {
-      this.resizeObserver.observe(table);
-    }
-
-    setTimeout(() => this.updateBottomScroller());
-  }
-
-  ngOnDestroy(): void {
-    this.resizeObserver?.disconnect();
-  }
-
-  @HostListener('window:resize')
-  protected onWindowResize(): void {
-    this.updateBottomScroller();
-  }
-
-  protected onTableWrapScroll(): void {
-    if (this.syncingFromBottom || !this.showBottomScroller()) {
-      return;
-    }
-
-    const tableWrap = this.tableWrapRef?.nativeElement;
-    const bottomScroller = this.bottomScrollerRef?.nativeElement;
-    if (!tableWrap || !bottomScroller) {
-      return;
-    }
-
-    this.syncingFromTable = true;
-    bottomScroller.scrollLeft = tableWrap.scrollLeft;
-    this.syncingFromTable = false;
-  }
-
-  protected onBottomScrollerScroll(): void {
-    if (this.syncingFromTable || !this.showBottomScroller()) {
-      return;
-    }
-
-    const tableWrap = this.tableWrapRef?.nativeElement;
-    const bottomScroller = this.bottomScrollerRef?.nativeElement;
-    if (!tableWrap || !bottomScroller) {
-      return;
-    }
-
-    this.syncingFromBottom = true;
-    tableWrap.scrollLeft = bottomScroller.scrollLeft;
-    this.syncingFromBottom = false;
-  }
-
-  private updateBottomScroller(): void {
-    const tableWrap = this.tableWrapRef?.nativeElement;
-    if (!tableWrap) {
-      return;
-    }
-
-    const scrollWidth = tableWrap.scrollWidth;
-    const clientWidth = tableWrap.clientWidth;
-    this.tableScrollWidth.set(scrollWidth);
-
-    const needsHorizontalScroll = scrollWidth - clientWidth > 1;
-    const showInCurrentViewport =
-      window.innerWidth > 768 && window.innerWidth <= this.bottomScrollerBreakpoint;
-    this.showBottomScroller.set(needsHorizontalScroll && showInCurrentViewport);
-
-    const bottomScroller = this.bottomScrollerRef?.nativeElement;
-    if (this.showBottomScroller() && bottomScroller) {
-      bottomScroller.scrollLeft = tableWrap.scrollLeft;
-    }
   }
 
   protected onSearch(): void {
@@ -226,11 +137,23 @@ export class ApplicationsComponent implements OnInit, AfterViewInit, OnDestroy {
   protected formatDate(date: string | undefined): string {
     if (!date) return '—';
     const d = new Date(date);
-    return d.toLocaleDateString('en-AU', { month: 'short', day: 'numeric' });
+    return d.toLocaleDateString('en-AU', { year: 'numeric', month: 'short', day: 'numeric' });
   }
 
-  protected markStars(mark: number | undefined): string {
-    if (!mark) return '';
-    return '★'.repeat(mark) + '☆'.repeat(5 - mark);
+
+  protected markStarsArr(mark: number | undefined): { filled: boolean, idx: number }[] {
+    return Array.from({ length: 5 }, (_, i) => ({ filled: !!mark && i < mark, idx: i + 1 }));
+  }
+
+  protected onStarEnter(appId: number, idx: number): void {
+    this.hoverMark.set({ appId, idx });
+  }
+
+  protected onStarsLeave(): void {
+    this.hoverMark.set(null);
+  }
+
+  protected onMark(app: JobApplication, value: number): void {
+    this.facade.mark(app.id, value);
   }
 }

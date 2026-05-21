@@ -1,3 +1,22 @@
+/* ── Mark Stars ── */
+.mark-stars {
+  display: flex;
+  gap: 2px;
+  font-size: 1.2em;
+  user-select: none;
+}
+.mark-stars .star {
+  color: #ccc;
+  cursor: pointer;
+  transition: color 0.15s;
+}
+.mark-stars .star.filled {
+  color: #f7b500;
+}
+.mark-stars .star:hover,
+.mark-stars .star:active {
+  color: #ff9800;
+}
 /* ── Header ── */
 header {
   border-bottom: 1px solid var(--border);
@@ -254,24 +273,6 @@ table {
   width: 100%;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
-}
-
-.bottom-scroller {
-  position: sticky;
-  bottom: 0;
-  z-index: 30;
-  margin-top: 8px;
-  height: 16px;
-  overflow-x: auto;
-  overflow-y: hidden;
-  border-top: 1px solid var(--border);
-  border-bottom: 1px solid var(--border);
-  background: var(--surface2);
-  -webkit-overflow-scrolling: touch;
-}
-
-.bottom-scroller-track {
-  height: 1px;
 }
 
 thead th {
@@ -655,7 +656,21 @@ tr.highlight-row .company-name { color: var(--accent); }
   }
 
   table {
-    min-width: 920px;
+    min-width: 760px;
+  }
+
+  thead th {
+    font-size: 9px;
+    padding: 0 10px 10px;
+  }
+
+  tbody td {
+    padding: 12px 10px;
+    font-size: 13px;
+  }
+
+  .edit-btn {
+    padding: 4px 8px;
   }
 
   .search-fields {
@@ -722,10 +737,6 @@ tr.highlight-row .company-name { color: var(--accent); }
 
   .table-wrap {
     overflow: visible;
-  }
-
-  .bottom-scroller {
-    display: none;
   }
 
   table {

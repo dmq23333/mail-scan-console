@@ -91,7 +91,7 @@
   } @else {
     <div class="section-title">— {{ visibleApps().length }} records —</div>
 
-    <div class="table-wrap" #tableWrap (scroll)="onTableWrapScroll()">
+    <div class="table-wrap">
       <table>
         <thead>
           <tr>
@@ -124,9 +124,17 @@
                 <span [class]="'badge ' + statusClass(app.offerStatus)">
                   {{ statusLabel(app.offerStatus) }}
                 </span>
-                @if (app.mark) {
-                  <div class="mark-stars">{{ markStars(app.mark) }}</div>
-                }
+                <div class="mark-stars" (mouseleave)="onStarsLeave()">
+                  @for (star of markStarsArr(app.mark); track star.idx) {
+                    <span
+                      class="star"
+                      [class.filled]="hoverMark()?.appId === app.id ? star.idx <= hoverMark()!.idx : star.filled"
+                      (mouseenter)="onStarEnter(app.id, star.idx)"
+                      (click)="onMark(app, star.idx)"
+                      [title]="star.idx + ' star'"
+                      >&#9733;</span>
+                  }
+                </div>
               </td>
               <td>
                 <div class="note-text">{{ app.snippet || '' }}</div>
@@ -142,12 +150,6 @@
         </tbody>
       </table>
     </div>
-
-    @if (showBottomScroller()) {
-      <div class="bottom-scroller" #bottomScroller (scroll)="onBottomScrollerScroll()">
-        <div class="bottom-scroller-track" [style.width.px]="tableScrollWidth()"></div>
-      </div>
-    }
 
     <div class="footer-note">
       * Showing {{ visibleApps().length }} / {{ facade.applications().length }} records

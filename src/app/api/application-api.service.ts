@@ -25,4 +25,8 @@ export class ApplicationApiService {
   delete(id: number): Observable<void> {
     return this.http.delete<void>(`${this.baseUrl}/${id}`);
   }
+
+  mark(id: number, value: number): Observable<JobApplication> {
+    return this.http.patch<JobApplication>(`${this.baseUrl}/${id}/mark`, null, { params: new HttpParams().set('value', value) });
+  }
 }

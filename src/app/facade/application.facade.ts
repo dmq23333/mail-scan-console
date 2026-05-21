@@ -46,4 +46,11 @@ export class ApplicationFacade {
       error: (err: { message?: string }) => this.error.set(err?.message ?? 'Failed to delete application'),
     });
   }
+
+  mark(id: number, value: number): void {
+    this.service.mark(id, value).subscribe({
+      next: updated => this.applications.update(apps => apps.map(a => a.id === id ? updated : a)),
+      error: (err: { message?: string }) => this.error.set(err?.message ?? 'Failed to mark application'),
+    });
+  }
 }

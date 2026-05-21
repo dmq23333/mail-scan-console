@@ -18,4 +18,8 @@ export class ApplicationService {
   delete(id: number): Observable<void> {
     return this.api.delete(id);
   }
+
+  mark(id: number, value: number): Observable<JobApplication> {
+    return this.api.mark(id, value);
+  }
 }
