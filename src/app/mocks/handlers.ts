@@ -66,6 +66,23 @@ export const handlers = [
         return HttpResponse.json(updated);
     }),
 
+    http.patch('/api/applications/:id/mark', ({ params, request }) => {
+        const id = Number(params['id']);
+        const value = Number(new URL(request.url).searchParams.get('value'));
+        if (!Number.isInteger(value) || value < 1 || value > 5) {
+            return HttpResponse.json({ message: 'mark must be between 1 and 5' }, { status: 400 });
+        }
+
+        const existing = applications.find((item) => item.id === id);
+        if (!existing) {
+            return HttpResponse.json({ message: 'Application not found' }, { status: 404 });
+        }
+
+        const updated = { ...existing, mark: value };
+        applications = applications.map((item) => (item.id === id ? updated : item));
+        return HttpResponse.json(updated);
+    }),
+
     http.delete('/api/applications/:id', ({ params }) => {
         const id = Number(params['id']);
         if (!Number.isFinite(id)) {
