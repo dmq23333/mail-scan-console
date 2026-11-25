@@ -2,6 +2,20 @@
 
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.0.2.
 
+## Run with Docker
+
+Build the image and start the app from the project directory:
+
+```bash
+docker compose up --build -d
+```
+
+Open [http://localhost:4200](http://localhost:4200). The container serves the production build and forwards `/api` requests to a backend running on port `8080` on the host. To stop it:
+
+```bash
+docker compose down
+```
+
 ## Development server
 
 To start a local development server, run:
